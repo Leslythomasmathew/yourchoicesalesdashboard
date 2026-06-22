@@ -21,29 +21,3 @@ A premium, interactive e-commerce analytics ledger for **Your Choice Boutique**,
 
 ---
 
-## 🛠️ How to Deploy on GitHub Pages (Hosting Instructions)
-
-If you need to reactivate or manage the GitHub Pages deployment:
-
-1.  Go to your repository settings page: `https://github.com/Leslythomasmathew/yourchoicesalesdashboard/settings`.
-2.  In the left sidebar, under **Code and automation**, click **Pages**.
-3.  Under **Build and deployment** -> **Source**, select **Deploy from a branch**.
-4.  Select the **`main`** branch and the **`/ (root)`** folder, then click **Save**.
-5.  Allow 1-2 minutes for the site to build. Your site will be live at `https://leslythomasmathew.github.io/yourchoicesalesdashboard/`.
-
----
-
-## 💻 How to Run Locally
-
-Since this dashboard is built using standard native HTML5, CSS3, and JavaScript, it runs locally without any build steps:
-
-1.  Clone this repository or open the project folder:
-    ```bash
-    git clone https://github.com/Leslythomasmathew/yourchoicesalesdashboard.git
-    cd yourchoicesalesdashboard
-    ```
-2.  Start a local server to bypass browser CORS file restrictions:
-    ```bash
-    npx http-server -p 8080
-    ```
-3.  Open [http://localhost:8080](http://localhost:8080) in your web browser.
