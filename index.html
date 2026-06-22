@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Choice Boutique - Sales KPI Dashboard</title>
+  <meta name="description" content="A premium Sales KPI Analytics Dashboard designed for Your Choice Boutique, tracking return rates, profit & loss, product categories, and regional performance in INR.">
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="index.css?v=7">
+</head>
+<body>
+  <div class="app-container">
+    
+    <!-- Top Navigation Header -->
+    <header class="app-header">
+      <div class="logo-area">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 17L12 22L22 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M2 12L12 17L22 12" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">YOUR CHOICE</span>
+          <span class="logo-subtitle">BOUTIQUE SALES & PROFIT LEDGER</span>
+        </div>
+      </div>
+      
+      <div class="header-actions">
+        <!-- Live Clock & Status Badge -->
+        <div class="status-indicator">
+          <span class="pulse-dot"></span>
+          <span class="status-text">Analytical Ledger Connected</span>
+        </div>
+        
+        <div class="time-widget" id="live-time">
+          Loading system time...
+        </div>
+
+        <!-- Theme Toggle Switch -->
+        <button id="theme-toggle" class="theme-toggle-btn" aria-label="Toggle visual theme">
+          <!-- Moon Icon (Dark Mode) -->
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+          </svg>
+          <!-- Sun Icon (Light Mode) -->
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Content Body -->
+    <main class="app-main">
+      
+      <!-- Filter and Control Center -->
+      <section class="control-panel glass-panel">
+        <div class="panel-title-row">
+          <h2 class="section-title">Control Center</h2>
+          <span class="panel-tag">Live Filters</span>
+        </div>
+        
+        <div class="filter-controls">
+          <!-- Timeframe Selector -->
+          <div class="filter-group">
+            <label class="filter-label">Timeframe</label>
+            <div class="btn-toggle-group" id="timeframe-selector">
+              <button class="btn-toggle active" data-timeframe="ytd">YTD</button>
+              <button class="btn-toggle" data-timeframe="30d">Last 30 Days</button>
+              <button class="btn-toggle" data-timeframe="7d">Last 7 Days</button>
+              <button class="btn-toggle" data-timeframe="today">Today</button>
+            </div>
+          </div>
+
+          <!-- Segment Select -->
+          <div class="filter-group">
+            <label class="filter-label" for="segment-filter">Customer Segment</label>
+            <div class="custom-select-wrapper">
+              <select id="segment-filter" class="select-field">
+                <option value="all">All Segments</option>
+                <option value="gents">Gents Wear</option>
+                <option value="ladies">Ladies Wear</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Category Select -->
+          <div class="filter-group">
+            <label class="filter-label" for="category-filter">Product Category</label>
+            <div class="custom-select-wrapper">
+              <select id="category-filter" class="select-field">
+                <option value="all">All Categories</option>
+                <option value="formal">Formal Wear</option>
+                <option value="casual">Casual Wear (Informal)</option>
+                <option value="festive">Festive & Ethnic</option>
+                <option value="active">Activewear</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Region Select -->
+          <div class="filter-group">
+            <label class="filter-label" for="region-filter">Zonal Market</label>
+            <div class="custom-select-wrapper">
+              <select id="region-filter" class="select-field">
+                <option value="all">All Zones</option>
+                <option value="north">North Zone</option>
+                <option value="south">South Zone</option>
+                <option value="east">East Zone</option>
+                <option value="west">West Zone</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- Reset Filters -->
+          <div class="filter-group align-end">
+            <button id="reset-filters" class="btn-secondary">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+              </svg>
+              Reset Filters
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Key Performance Indicators (KPI Cards) -->
+      <section class="kpi-grid">
+        <!-- KPI Card 1: Revenue -->
+        <div class="kpi-card glass-panel" id="kpi-revenue">
+          <div class="kpi-header">
+            <span class="kpi-title">Gross Revenue (GMV)</span>
+            <div class="kpi-icon-wrapper rev">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="1" x2="12" y2="23"></line>
+                <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="kpi-body">
+            <h3 class="kpi-value" id="val-revenue">₹0</h3>
+            <div class="kpi-trend" id="trend-revenue">
+              <span class="trend-indicator plus">
+                <!-- Will be updated by JS -->
+              </span>
+              <span class="trend-period">vs prev period</span>
+            </div>
+          </div>
+          <div class="kpi-chart-wrapper">
+            <svg class="sparkline" id="spark-revenue" width="100%" height="40" viewBox="0 0 100 40" preserveAspectRatio="none"></svg>
+          </div>
+        </div>
+
+        <!-- KPI Card 2: Conversion Rate -->
+        <div class="kpi-card glass-panel" id="kpi-conversion">
+          <div class="kpi-header">
+            <span class="kpi-title">Conversion Rate</span>
+            <div class="kpi-icon-wrapper conv">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="2" y1="12" x2="22" y2="12"></line>
+                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+              </svg>
+            </div>
+          </div>
+          <div class="kpi-body">
+            <h3 class="kpi-value" id="val-conversion">0.00%</h3>
+            <div class="kpi-trend" id="trend-conversion">
+              <span class="trend-indicator plus">
+                <!-- Will be updated by JS -->
+              </span>
+              <span class="trend-period">vs prev period</span>
+            </div>
+          </div>
+          <div class="kpi-chart-wrapper">
+            <svg class="sparkline" id="spark-conversion" width="100%" height="40" viewBox="0 0 100 40" preserveAspectRatio="none"></svg>
+          </div>
+        </div>
+
+        <!-- KPI Card 3: Net Profit / Loss -->
+        <div class="kpi-card glass-panel" id="kpi-profit">
+          <div class="kpi-header">
+            <span class="kpi-title" id="title-profit">Net Profit / Loss</span>
+            <div class="kpi-icon-wrapper aov">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="16"></line>
+                <line x1="8" y1="12" x2="16" y2="12"></line>
+              </svg>
+            </div>
+          </div>
+          <div class="kpi-body">
+            <h3 class="kpi-value" id="val-profit">₹0</h3>
+            <div class="kpi-trend" id="trend-profit">
+              <span class="trend-indicator plus">
+                <!-- Will be updated by JS -->
+              </span>
+              <span class="trend-period">vs prev period</span>
+            </div>
+          </div>
+          <div class="kpi-chart-wrapper">
+            <svg class="sparkline" id="spark-profit" width="100%" height="40" viewBox="0 0 100 40" preserveAspectRatio="none"></svg>
+          </div>
+        </div>
+
+        <!-- KPI Card 4: Return Rate -->
+        <div class="kpi-card glass-panel" id="kpi-returns">
+          <div class="kpi-header">
+            <span class="kpi-title">Return Rate (Refunds)</span>
+            <div class="kpi-icon-wrapper ret">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
+            </div>
+          </div>
+          <div class="kpi-body">
+            <h3 class="kpi-value" id="val-returns">0.00%</h3>
+            <div class="kpi-trend" id="trend-returns">
+              <span class="trend-indicator minus">
+                <!-- Will be updated by JS -->
+              </span>
+              <span class="trend-period">vs prev period</span>
+            </div>
+          </div>
+          <div class="kpi-chart-wrapper">
+            <svg class="sparkline" id="spark-returns" width="100%" height="40" viewBox="0 0 100 40" preserveAspectRatio="none"></svg>
+          </div>
+        </div>
+      </section>
+
+      <!-- Charts Visualization Grid -->
+      <section class="charts-grid">
+        <!-- Main Area Trend Chart -->
+        <div class="chart-card glass-panel span-two">
+          <div class="chart-header">
+            <div>
+              <h3 class="chart-card-title">Cumulative GMV & Net Profit Performance</h3>
+              <span class="chart-subtitle">Monthly cumulative revenue vs cumulative profit (INR)</span>
+            </div>
+            <div class="chart-legend" id="revenue-legend">
+              <span class="legend-item"><span class="legend-color revenue"></span>Gross Revenue (GMV)</span>
+              <span class="legend-item"><span class="legend-color profit-line"></span>Net Profit (L & P)</span>
+            </div>
+          </div>
+          <div class="chart-container-wrapper">
+            <div class="chart-container" id="revenue-trend-container">
+              <!-- Rendered via JS SVG -->
+            </div>
+            <!-- Chart Tooltip -->
+            <div id="chart-tooltip" class="chart-tooltip hidden"></div>
+          </div>
+        </div>
+
+        <!-- Secondary Charts -->
+        <!-- Donut Chart: Traffic -->
+        <div class="chart-card glass-panel">
+          <div class="chart-header">
+            <div>
+              <h3 class="chart-card-title">Traffic Acquisition Channels</h3>
+              <span class="chart-subtitle">Distribution of customer session sources</span>
+            </div>
+          </div>
+          <div class="chart-container-wrapper">
+            <div class="chart-container flex-center" id="acquisition-donut-container">
+              <!-- Rendered via JS SVG -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Bar Chart: Category -->
+        <div class="chart-card glass-panel">
+          <div class="chart-header">
+            <div>
+              <h3 class="chart-card-title">Sales by Product Category</h3>
+              <span class="chart-subtitle">Revenue volume comparison</span>
+            </div>
+          </div>
+          <div class="chart-container-wrapper">
+            <div class="chart-container" id="category-bar-container">
+              <!-- Rendered via JS SVG -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Analytical Insights Section (Internship Highlight) -->
+      <section class="insights-section glass-panel">
+        <div class="insights-header">
+          <div class="insights-header-left">
+            <div class="insights-badge">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
+              E-Commerce Zonal Performance Insights
+            </div>
+            <h3 class="insights-title">Performance Executive Summary</h3>
+          </div>
+          <span class="insights-meta" id="insights-count">Analyzing filtered dataset...</span>
+        </div>
+        <div class="insights-body" id="analyst-insights-panel">
+          <!-- Dynamic Analyst Insights lists generated here -->
+          <div class="insight-loading">
+            <span class="spinner-small"></span> Generating live analytical observations...
+          </div>
+        </div>
+      </section>
+
+      <!-- Data Ledger Table -->
+      <section class="table-section glass-panel">
+        <div class="table-header">
+          <div class="table-header-left">
+            <h3 class="table-title">Transaction Records Ledger</h3>
+            <span class="table-subtitle">Granular checkout logs for validation</span>
+          </div>
+          
+          <div class="table-actions">
+            <!-- Search Input -->
+            <div class="search-wrapper">
+              <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input type="text" id="table-search" placeholder="Search orders, segment, customers..." aria-label="Search transaction records">
+            </div>
+            
+            <!-- Export Button -->
+            <button id="btn-export" class="btn-primary">
+              <svg class="icon-export" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+              </svg>
+              <svg class="icon-spinner hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="12" y1="2" x2="12" y2="6"></line>
+                <line x1="12" y1="18" x2="12" y2="22"></line>
+                <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+                <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+                <line x1="2" y1="12" x2="6" y2="12"></line>
+                <line x1="18" y1="12" x2="22" y2="12"></line>
+                <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+                <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+              </svg>
+              <svg class="icon-success hidden" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+              </svg>
+              <span id="export-text">Export CSV</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Scrollable Table Wrapper -->
+        <div class="table-container">
+          <table id="transactions-table">
+            <thead>
+              <tr>
+                <th class="sortable" data-sort="id">Order ID <span class="sort-indicator"></span></th>
+                <th class="sortable" data-sort="customer">Customer <span class="sort-indicator"></span></th>
+                <th class="sortable" data-sort="date">Date <span class="sort-indicator"></span></th>
+                <th class="sortable" data-sort="segment">Segment <span class="sort-indicator"></span></th>
+                <th class="sortable" data-sort="category">Category <span class="sort-indicator"></span></th>
+                <th class="sortable" data-sort="region">Zone <span class="sort-indicator"></span></th>
+                <th class="sortable" data-sort="amount">Amount <span class="sort-indicator"></span></th>
+                <th class="sortable" data-sort="status">Status <span class="sort-indicator"></span></th>
+              </tr>
+            </thead>
+            <tbody id="table-body">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Table Footer / Pagination -->
+        <div class="table-footer">
+          <span class="pagination-info" id="pagination-info">Showing 0-0 of 0 entries</span>
+          <div class="pagination-controls">
+            <button id="btn-prev" class="btn-page" disabled>Previous</button>
+            <div class="page-numbers" id="page-numbers">
+              <!-- Rendered via JS -->
+            </div>
+            <button id="btn-next" class="btn-page" disabled>Next</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <div class="footer-left">
+        <p>&copy; 2026 Your Choice Boutique. All rights reserved.</p>
+      </div>
+      <div class="footer-right">
+        <p>Fashion Retail Analytics Model V6.0.0 &bull; Zonal Reports In INR</p>
+      </div>
+    </footer>
+
+  </div>
+
+  <script src="index.js?v=7"></script>
+</body>
+</html>
