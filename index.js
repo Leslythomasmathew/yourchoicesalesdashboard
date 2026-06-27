@@ -112,7 +112,7 @@ const generateHistoricalData = () => {
 };
 
 // Global dashboard database
-const dashboardData = generateHistoricalData();
+let dashboardData = generateHistoricalData();
 
 // --- 2. STATE MANAGER ---
 const state = {
@@ -1329,6 +1329,156 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   };
   setupExportControl();
+  
+  // F. CSV Detailed Importer
+  const setupImportControl = () => {
+    const btnImportTrigger = document.getElementById("btn-import-trigger");
+    const fileInput = document.getElementById("csv-file-input");
+    
+    if (!btnImportTrigger || !fileInput) return;
+    
+    btnImportTrigger.addEventListener("click", () => {
+      fileInput.click();
+    });
+    
+    fileInput.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const text = evt.target.result;
+        try {
+          const imported = parseCSV(text);
+          if (imported.length === 0) {
+            alert("No valid transaction rows found in the CSV.");
+            return;
+          }
+          
+          // Overwrite global dashboard data
+          dashboardData = imported;
+          
+          // Reset filters to visual defaults to show all new data
+          state.timeframe = "ytd";
+          state.segment = "all";
+          state.category = "all";
+          state.region = "all";
+          state.searchQuery = "";
+          state.currentPage = 1;
+          
+          const timeframeGroup = document.getElementById("timeframe-selector");
+          if (timeframeGroup) {
+            timeframeGroup.querySelector(".btn-toggle.active").classList.remove("active");
+            timeframeGroup.querySelector('[data-timeframe="ytd"]').classList.add("active");
+          }
+          
+          const segFilter = document.getElementById("segment-filter");
+          if (segFilter) segFilter.value = "all";
+          const catFilter = document.getElementById("category-filter");
+          if (catFilter) catFilter.value = "all";
+          const regFilter = document.getElementById("region-filter");
+          if (regFilter) regFilter.value = "all";
+          
+          const searchInput = document.getElementById("table-search");
+          if (searchInput) searchInput.value = "";
+          
+          // Reload everything
+          updateDashboard();
+          
+          alert(`Successfully imported ${imported.filter(s => s.converted).length} transaction records! Dashboard metrics and charts have been updated.`);
+        } catch (err) {
+          console.error(err);
+          alert("Error parsing CSV. Please ensure the CSV has correct headers (OrderID, CustomerName, PurchaseDate, Segment, Category, ZonalMarket, AmountINR, OrderStatus, AcquisitionChannel).");
+        }
+      };
+      reader.readAsText(file);
+      fileInput.value = "";
+    });
+  };
+  
+  // Helper to parse standard CSV format (handles quotes and commas)
+  const parseCSV = (text) => {
+    const lines = text.split(/\r?\n/).filter(line => line.trim() !== "");
+    if (lines.length < 2) return [];
+    
+    const parseCSVLine = (line) => {
+      const result = [];
+      let current = "";
+      let inQuotes = false;
+      for (let i = 0; i < line.length; i++) {
+        const char = line[i];
+        if (char === '"') {
+          inQuotes = !inQuotes;
+        } else if (char === ',' && !inQuotes) {
+          result.push(current.trim());
+          current = "";
+        } else {
+          current += char;
+        }
+      }
+      result.push(current.trim());
+      return result;
+    };
+    
+    const headers = parseCSVLine(lines[0]);
+    const required = ["OrderID", "CustomerName", "PurchaseDate", "Segment", "Category", "ZonalMarket", "AmountINR", "OrderStatus", "AcquisitionChannel"];
+    
+    const headerIndices = {};
+    required.forEach(req => {
+      const idx = headers.findIndex(h => h.toLowerCase() === req.toLowerCase());
+      if (idx !== -1) {
+        headerIndices[req] = idx;
+      }
+    });
+    
+    if (headerIndices["OrderID"] === undefined || headerIndices["AmountINR"] === undefined) {
+      throw new Error("Missing required headers");
+    }
+    
+    const parsedData = [];
+    
+    for (let i = 1; i < lines.length; i++) {
+      const row = parseCSVLine(lines[i]);
+      if (row.length < headers.length) continue;
+      
+      const getVal = (key) => {
+        const idx = headerIndices[key];
+        return idx !== undefined ? row[idx].replace(/^"|"$/g, "") : "";
+      };
+      
+      const amountVal = parseFloat(getVal("AmountINR")) || 0;
+      const dateVal = new Date(getVal("PurchaseDate"));
+      const dateObj = isNaN(dateVal.getTime()) ? new Date() : dateVal;
+      
+      const orderId = getVal("OrderID");
+      const customer = getVal("CustomerName") || "Customer";
+      const status = getVal("OrderStatus").toLowerCase() || "shipped";
+      
+      const segment = getVal("Segment").toLowerCase() || "gents";
+      const category = getVal("Category").toLowerCase().replace(" wear", "") || "casual";
+      const region = getVal("ZonalMarket").toLowerCase().replace(" zone", "") || "north";
+      const channel = getVal("AcquisitionChannel") || "Direct";
+      
+      parsedData.push({
+        date: dateObj,
+        converted: true,
+        region: region,
+        segment: segment,
+        category: category,
+        channel: channel,
+        orderDetails: {
+          orderId: orderId,
+          customer: customer,
+          amount: amountVal,
+          status: status
+        }
+      });
+    }
+    
+    return parsedData;
+  };
+
+  setupImportControl();
   
   // Initial load
   updateDashboard();
